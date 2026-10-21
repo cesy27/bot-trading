@@ -2,25 +2,27 @@ name: Bot Trading 4H
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # Esegue il bot ogni 15 minuti
-  workflow_dispatch:
+    - cron: '*/15 * * * *'  # Esegue il controllo ogni 15 minuti
+  workflow_dispatch:        # Ti permette anche di testarlo a mano quando vuoi
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: |
-          pip install pandas requests
+          pip install requests pandas ccxt
 
-      - name: Run script
+      - name: Run bot script
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           python bot_trading.py
